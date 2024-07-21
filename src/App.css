@@ -13,9 +13,15 @@ body {
   height: 100vh;
   color: #1b1b1b;
   background-color: #ffffff;
+  scroll-behavior: smooth;
 }
 
-.container {
+.landing,
+.lobby,
+.game,
+.choose-container,
+.host,
+.join {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,10 +31,11 @@ body {
   border-radius: 20px;
   padding: 40px;
   box-shadow: 10px 10px 0px #000;
-  width: 90%;
+  width: 80%;
   max-width: 400px;
   text-align: center;
   animation: fadeIn 1s ease-in-out;
+  min-width: 300px;
 }
 
 @keyframes fadeIn {
@@ -36,8 +43,11 @@ body {
   to { opacity: 1; }
 }
 
-h2 {
-  font-size: 2rem;
+.landing h2,
+.choose-container h2,
+.host h2,
+.join h2 {
+  font-size: 3rem;
   font-weight: 900;
   color: #ffc510;
   margin-bottom: 20px;
@@ -45,7 +55,8 @@ h2 {
   -webkit-text-stroke: 1px #000;
 }
 
-input {
+.landing input,
+.game-code-input {
   font-family: "Bangers";
   padding: 10px;
   margin: 10px 0;
@@ -58,7 +69,8 @@ input {
   box-shadow: 5px 5px 0px #000;
 }
 
-input:focus {
+.landing input:focus,
+.game-code-input:focus {
   outline: none;
   background-color: #fefefe;
 }
@@ -137,16 +149,40 @@ input:focus {
 }
 
 @media (max-width: 600px) {
-  .container {
+  body {
+    background: url('./assets/back.png') no-repeat center center fixed;
+    background-size: cover;
+    backface-visibility: 0.5;
+    display: fixed;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #1b1b1b;
+    background-color: #ffffff;
+    margin: 0; height: 100%; overflow: hidden
+  
+  }
+
+  .landing,
+  .choose-container,
+  .host,
+  .join,
+  .lobby,
+  .game {
     padding: 20px;
-    width: 100%;
+    
   }
 
-  h2 {
-    font-size: 1.5rem;
+  .landing h2,
+  .choose-container h2,
+  .host h2,
+  .join h2 {
+    font-size: 2rem;
   }
 
-  input, .comic-button {
+  .landing input,
+  .game-code-input,
+  .comic-button {
     font-size: 0.9rem;
   }
 }
