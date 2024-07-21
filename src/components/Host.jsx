@@ -11,6 +11,7 @@ const Host = () => {
   const [gameCode, setGameCode] = useState('');
   const [players, setPlayers] = useState([userName]);
   const [categories, setCategories] = useState(['fruits']); // Example categories
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +55,8 @@ const Host = () => {
 
   const startGame = async () => {
     if (players.length < 3) {
-      alert('Need at least 3 players to start the game');
+      setMessage('Need at least 3 players to start the game');
+      setTimeout(() => setMessage(''), 3000); // Clear message after 3 seconds
       return;
     }
 
@@ -66,8 +68,26 @@ const Host = () => {
     navigate(`/game/${gameCode}`);
   };
 
+  const exitGame = async () => {
+    if (players.length <= 3) {
+      await updateDoc(doc(firestore, 'games', gameCode), {
+        status: 'ended',
+        message: 'Host ended the game due to insufficient players'
+      });
+      navigate('/');
+    } else {
+      const remainingPlayers = players.filter(player => player !== userName);
+      await updateDoc(doc(firestore, 'games', gameCode), {
+        players: remainingPlayers,
+        host: remainingPlayers[0],
+        message: 'Host has left. New host is ' + remainingPlayers[0]
+      });
+      navigate('/');
+    }
+  };
+
   return (
-    <div className="host">
+    <div className="container">
       <h2>Game Code: {gameCode}</h2>
       <QRCode value={`${window.location.origin}/join/${gameCode}`} />
       <h3>Players:</h3>
@@ -76,7 +96,9 @@ const Host = () => {
           <li key={index}>{player}</li>
         ))}
       </ul>
+      {message && <p className="message">{message}</p>}
       <button className="comic-button" onClick={startGame}>Start Game</button>
+      <button className="comic-button" onClick={exitGame}>Exit Game</button>
     </div>
   );
 };

@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 const Landing = ({ setUserName }) => {
   const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleStart = () => {
     if (!name) {
-      alert('Please enter your name');
+      setMessage('Please enter your name');
+      setTimeout(() => setMessage(''), 3000); // Clear message after 3 seconds
       return;
     }
     setUserName(name);
@@ -16,7 +18,7 @@ const Landing = ({ setUserName }) => {
   };
 
   return (
-    <div className="landing">
+    <div className="container">
       <h2>Welcome to MisCarded</h2>
       <input
         type="text"
@@ -25,6 +27,7 @@ const Landing = ({ setUserName }) => {
         onChange={(e) => setName(e.target.value)}
       />
       <button className="comic-button" onClick={handleStart}>Start</button>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };

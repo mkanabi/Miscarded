@@ -13,13 +13,9 @@ body {
   height: 100vh;
   color: #1b1b1b;
   background-color: #ffffff;
-
 }
 
-
-.landing,
-.lobby,
-.game{
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,18 +36,16 @@ body {
   to { opacity: 1; }
 }
 
-.landing h2 {
-  font-size: 3rem;
-  font-weight:900;
+h2 {
+  font-size: 2rem;
+  font-weight: 900;
   color: #ffc510;
   margin-bottom: 20px;
   text-shadow: 2px 2px #000;
   -webkit-text-stroke: 1px #000;
-
 }
 
-.landing input,
-.game-code-input {
+input {
   font-family: "Bangers";
   padding: 10px;
   margin: 10px 0;
@@ -64,12 +58,15 @@ body {
   box-shadow: 5px 5px 0px #000;
 }
 
-.landing input:focus {
+input:focus {
   outline: none;
   background-color: #fefefe;
 }
 
-.comic-button {
+.comic-button,
+.comic-button-exit,
+.comic-button-restart,
+.comic-button-end {
   display: inline-block;
   padding: 10px 20px;
   font-size: 1rem;
@@ -83,6 +80,26 @@ body {
   box-shadow: 5px 5px 0px #000;
   transition: all 0.3s ease;
   cursor: pointer;
+  margin: 5px;
+}
+
+.comic-button-exit {
+  margin-top: 5%;
+  background-color: #ffc510;
+}
+
+.comic-button-end {
+  background-color: #ee5454;
+}
+
+.comic-button-restart {
+  background-color: #4c94f6;
+}
+
+.host-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .comic-button:hover {
@@ -92,6 +109,27 @@ body {
   box-shadow: 5px 5px 0px #ff5252;
 }
 
+.comic-button-exit:hover {
+  background-color: #fff;
+  color: #ffc510;
+  border: 2px solid #ffc510;
+  box-shadow: 5px 5px 0px #ffc510;
+}
+
+.comic-button-restart:hover {
+  background-color: #fff;
+  color: #4c94f6;
+  border: 2px solid #4c94f6;
+  box-shadow: 5px 5px 0px #4c94f6;
+}
+
+.comic-button-end:hover {
+  background-color: #fff;
+  color: #ee5454;
+  border: 2px solid #ee5454;
+  box-shadow: 5px 5px 0px #ee5454;
+}
+
 .comic-button:active {
   background-color: #fcf414;
   box-shadow: none;
@@ -99,52 +137,18 @@ body {
 }
 
 @media (max-width: 600px) {
-  .landing {
+  .container {
     padding: 20px;
+    width: 100%;
   }
 
-  .landing h2 {
+  h2 {
     font-size: 1.5rem;
   }
 
-  .landing input, .comic-button {
+  input, .comic-button {
     font-size: 0.9rem;
   }
-}
-
-
-.choose-container,
-.host,
-.join {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #e3e3e3;
-  border: 4px solid #000;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 10px 10px 0px #000;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.choose-container h2,
-.host h2,
-.join h2 {
-  font-size: 3rem;
-  font-weight: 900;
-  color: #ffc510;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px #000;
-  -webkit-text-stroke: 1px #000;
 }
 
 .button-container,
@@ -158,4 +162,24 @@ body {
 .players-list li {
   font-size: 1.2rem;
   color: #131313;
+}
+
+.message {
+  font-size: 1.2rem;
+  color: #fff;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c7dc2;
+  border-radius: 10px;
+  padding: 6px 12px;
+  animation: slideInOut 3s ease-in-out;
+  z-index: 1000;
+}
+
+@keyframes slideInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  10%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
 }

@@ -1,16 +1,19 @@
 // src/components/Game.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase';
-import { doc, updateDoc, onSnapshot, collection, getDocs } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove } from 'firebase/firestore';
 
 const Game = ({ userName }) => {
   const { gameCode } = useParams();
+  const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
+  const [host, setHost] = useState('');
   const [words, setWords] = useState([]);
   const [categories, setCategories] = useState([]);
   const [assignedWords, setAssignedWords] = useState([]);
   const [myWord, setMyWord] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -30,16 +33,26 @@ const Game = ({ userName }) => {
       if (doc.exists()) {
         const data = doc.data();
         setPlayers(data.players);
+        setHost(data.host);
         if (data.status === 'started') {
           setWords(data.words);
           const myWordObj = data.words.find((word) => word.uid === userName);
           setMyWord(myWordObj ? myWordObj.word : '');
+        } else if (data.status === 'ended') {
+          setMessage('Host ended the game');
+          setTimeout(() => {
+            navigate('/');
+          }, 3000);
+        }
+        if (data.message) {
+          setMessage(data.message);
+          setTimeout(() => setMessage(''), 3000);
         }
       }
     });
 
     return () => unsubscribe();
-  }, [gameCode, userName]);
+  }, [gameCode, userName, navigate]);
 
   const assignWords = async () => {
     if (categories.length === 0) {
@@ -83,9 +96,51 @@ const Game = ({ userName }) => {
       await assignWords();
       await updateDoc(doc(firestore, 'games', gameCode), {
         status: 'started',
+        message: 'Game restarted by host'
       });
     } catch (error) {
       console.error('Error restarting game:', error);
+    }
+  };
+
+  const exitGame = async () => {
+    const gameRef = doc(firestore, 'games', gameCode);
+    if (players.length <= 3) {
+      await updateDoc(gameRef, { status: 'ended', message: 'Not enough players. Game ended.' });
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } else {
+      if (host === userName) {
+        const remainingPlayers = players.filter(player => player !== userName);
+        await updateDoc(gameRef, {
+          players: arrayRemove(userName),
+          host: remainingPlayers[0],
+          message: `${userName} exited the game. ${remainingPlayers[0]} is the new host.`
+        });
+      } else {
+        await updateDoc(gameRef, {
+          players: arrayRemove(userName),
+          message: `${userName} exited the game.`
+        });
+      }
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    }
+  };
+
+  const endGame = async () => {
+    try {
+      await updateDoc(doc(firestore, 'games', gameCode), {
+        status: 'ended',
+        message: 'Host ended the game'
+      });
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } catch (error) {
+      console.error('Error ending game:', error);
     }
   };
 
@@ -96,10 +151,24 @@ const Game = ({ userName }) => {
   }, [players]);
 
   return (
-    <div className="game">
-      <h1>Your Word</h1>
-      <h2>{myWord}</h2>
-      {players[0] === userName && <button onClick={restartGame}>Restart Game</button>}
+    <div className="container">
+      <h1 className="word">{myWord}</h1>
+      {message && <p className='message'>{message}</p>}
+      <div>
+        <h3>Players in the game:</h3>
+        <ul>
+          {players.map((player, index) => (
+            <li key={index}>{player}{player === host && ' (Host)'}</li>
+          ))}
+        </ul>
+      </div>
+      {host === userName && (
+        <div className='host-buttons'>
+          <button onClick={restartGame} className="comic-button-restart">Restart Game</button>
+          <button onClick={endGame} className="comic-button-end">End Game</button>
+        </div>
+      )}
+      <button onClick={exitGame} className="comic-button-exit">Exit Game</button>
     </div>
   );
 };
