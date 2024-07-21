@@ -15,7 +15,7 @@ const Choose = () => {
   };
 
   return (
-    <div className="choose-container">
+    <div className="container">
       <h2>Choose an Option</h2>
       <div className="button-container">
         <button className="comic-button" onClick={handleHostGame}>Host Game</button>

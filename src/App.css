@@ -13,6 +13,8 @@ body {
   height: 100vh;
   color: #1b1b1b;
   background-color: #ffffff;
+  height: 100%;
+
 }
 
 .container {
@@ -137,9 +139,15 @@ input:focus {
 }
 
 @media (max-width: 600px) {
+  html, body {
+    overflow: hidden;
+  }
   .container {
     padding: 20px;
     width: 100%;
+    margin-right: 40px;
+    min-width: none;
+    max-width: 90%;
   }
 
   h2 {

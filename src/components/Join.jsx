@@ -57,7 +57,7 @@ const Join = () => {
   };
 
   return (
-    <div className="join">
+    <div className="container">
       <h2>Join Game</h2>
       {message && <p className="message">{message}</p>}
       {!gameCode && (
