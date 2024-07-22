@@ -40,6 +40,9 @@ border-color: #000;
   gap: 20px;
   padding: 30px; 
 }
+footer{
+z-index: 1;
+}
 .toggleSwitch {
   width: 50px;
   height: 50px;
@@ -90,7 +93,7 @@ border-color: #000;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  z-index: 3;
+  z-index: 2;
   transition-duration: .3s;
 }
 
@@ -201,7 +204,7 @@ footer p {
   background-color: #d95610;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index:3;
+  z-index:5;
   border-radius: 15px;
 }
 
@@ -251,9 +254,11 @@ footer p {
   box-shadow: 10px 10px 0px #000;
   width: 90%;
   max-width: 400px;
+  max-height: max-content;
   text-align: center;
   animation: fadeIn 1s ease-in-out;
   margin: auto; /* Center the container */
+  z-index: 2;
 }
 
 @keyframes fadeIn {
@@ -472,7 +477,7 @@ input:focus {
   right: 0;
   background-color: #444;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  z-index: 3;
+  z-index: 5;
   border-radius: 5px;
   overflow: hidden;
 }
