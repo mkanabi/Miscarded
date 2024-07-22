@@ -1,8 +1,8 @@
-// src/components/Join.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { firestore } from '../firebase';
 import { doc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
+import audioManager from '../audioManager';
 
 const Join = () => {
   const { gameCode } = useParams();
@@ -11,12 +11,6 @@ const Join = () => {
   const [playerName, setPlayerName] = useState(location.state?.userName || '');
   const [inputGameCode, setInputGameCode] = useState(gameCode || '');
   const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    if (playerName && inputGameCode) {
-      handleJoinGame();
-    }
-  }, [playerName, inputGameCode]);
 
   const handleJoinGame = async () => {
     if (!playerName) {
@@ -40,20 +34,38 @@ const Join = () => {
         players: arrayUnion(playerName),
       });
 
-      navigate(`/lobby/${code}`);
+      localStorage.setItem('joinedGameCode', code);
+      localStorage.setItem('userName', playerName);
+
+      navigate(`/lobby/${code}`, { state: { userName: playerName } });
+      audioManager.playGameStart();
     } else {
+      audioManager.playFail();
       setMessage('Game not found');
       setTimeout(() => setMessage(''), 3000);
     }
   };
 
   const handleSubmit = () => {
-    if (!playerName || !inputGameCode) {
+    audioManager.playButtonClick();
+    if (!playerName || (!inputGameCode && !gameCode)) {
+      audioManager.playFail();
       setMessage('Please fill in all fields');
       setTimeout(() => setMessage(''), 3000);
       return;
     }
     handleJoinGame();
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  const handleReturn = () => {
+    audioManager.playButtonClick();
+    navigate('/choose', { state: { userName: playerName } });
   };
 
   return (
@@ -67,19 +79,22 @@ const Join = () => {
           className="game-code-input"
           value={inputGameCode}
           onChange={(e) => setInputGameCode(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
       )}
-      {!playerName && (
+      {!location.state?.userName && (
         <input
           type="text"
           placeholder="Enter your name"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
       )}
-      {(!playerName || !gameCode) && (
+      <div className="button-container">
         <button className="comic-button" onClick={handleSubmit}>Join Game</button>
-      )}
+        <button className="comic-button return-button" onClick={handleReturn}>Return</button>
+      </div>
     </div>
   );
 };
