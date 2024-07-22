@@ -3,10 +3,10 @@ import { set } from "firebase/database";
 // src/audioManager.js
 class AudioManager {
   constructor() {
-    this.backgroundMusic = new Audio('./src/assets/background-music.mp3');
-    this.buttonClickSound = new Audio('./src/assets/button-click.mp3');
-    this.gameStartSound = new Audio('./src/assets/game-start.mp3');
-    this.failSound = new Audio('./src/assets/fail.mp3');
+    this.backgroundMusic = new Audio('/assets/background-music.mp3');
+    this.buttonClickSound = new Audio('/assets/button-click.mp3');
+    this.gameStartSound = new Audio('/assets/game-start.mp3');
+    this.failSound = new Audio('/assets/fail.mp3');
     this.musicStarted = false;
     this.soundEnabled = false;
   }
