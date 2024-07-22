@@ -17,10 +17,7 @@ const Choose = () => {
     navigate('/join', { state: { userName } });
   };
 
-  const handleReturn = () => {
-    audioManager.playButtonClick();
-    navigate('/', { state: { userName } });
-  };
+
 
   return (
     <div className="container">
@@ -28,7 +25,6 @@ const Choose = () => {
       <div className="button-container">
         <button className="comic-button" onClick={handleHostGame}>Host Game</button>
         <button className="comic-button" onClick={handleJoinGame}>Join Game</button>
-        <button className="comic-button return-button" onClick={handleReturn}>Return</button>
       </div>
     </div>
   );

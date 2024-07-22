@@ -15,23 +15,20 @@ import HowToPlay from './components/HowToPlay';
 import audioManager from './audioManager';
 
 const App = () => {
-  const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
+  const [userName, setUserName] = useState('');
   const [soundEnabled, setSoundEnabled] = useState(false);
 
   const handleSoundToggle = () => {
     setSoundEnabled(!soundEnabled);
-    if (!soundEnabled) {
+  };
+
+  useEffect(() => {
+    if (soundEnabled) {
       audioManager.playBackgroundMusic();
     } else {
       audioManager.stopBackgroundMusic();
     }
-  };
-
-  useEffect(() => {
-    if (userName) {
-      localStorage.setItem('userName', userName);
-    }
-  }, [userName]);
+  }, [soundEnabled]);
 
   return (
     <Router>

@@ -31,7 +31,7 @@ header, footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
+  z-index: 2;
 border-color: #000;  
   box-shadow: 5px 5px 0px #2a2a2a;
   margin-left: 5%;
@@ -79,7 +79,7 @@ border-color: #000;
 }
 
 .speaker svg {
-  width: 18px;
+  width: 22px;
 }
 
 .mute-speaker {
@@ -95,7 +95,7 @@ border-color: #000;
 }
 
 .mute-speaker svg {
-  width: 18px;
+  width: 22px;
 }
 
 #checkboxInput:checked + .toggleSwitch .speaker {
@@ -153,10 +153,10 @@ header nav a:hover {
  font-size: 2.5rem;
   font-weight: 900;
   color: #ffd439;
-  margin-bottom: 20px;
   text-shadow: 5px 3px #d95610;
   -webkit-text-stroke: 1px #ac3c00;
   text-decoration: none;
+  cursor:pointer;
 
 }
 .logo:hover{
@@ -201,7 +201,7 @@ footer p {
   background-color: #d95610;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index:3;
   border-radius: 15px;
 }
 
@@ -364,7 +364,6 @@ input:focus {
 @media (max-width: 600px) {
   html, body {
     overflow: hidden;
-    font-size: larger;
     max-width: 100%;
   }
 
@@ -401,7 +400,7 @@ input:focus {
     flex-direction: column;
     gap: 10px;
     margin-right: 5px;
-    
+
   }
 }
 
@@ -473,7 +472,7 @@ input:focus {
   right: 0;
   background-color: #444;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 3;
   border-radius: 5px;
   overflow: hidden;
 }
@@ -498,4 +497,18 @@ input:focus {
 .sound-toggle {
   display: flex;
   align-items: center;
+}
+
+
+.comic-select {
+  font-family: "Bangers";
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #000;
+  border-radius: 10px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: #e4e4e4;
+  color: #131313;
+  box-shadow: 5px 5px 0px #000;
 }

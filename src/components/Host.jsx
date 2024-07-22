@@ -1,9 +1,9 @@
+// src/components/Host.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { firestore } from '../firebase';
-import { doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, onSnapshot, collection, getDocs, updateDoc } from 'firebase/firestore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import QRCode from 'qrcode.react';
-import { fetchWords } from '../utils/fetchWords';
 import audioManager from '../audioManager';
 
 const Host = () => {
@@ -11,11 +11,26 @@ const Host = () => {
   const userName = location.state?.userName;
   const [gameCode, setGameCode] = useState('');
   const [players, setPlayers] = useState([userName]);
-  const [categories] = useState(['fruits']); // Example categories
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('random');
+  const [customWords, setCustomWords] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const gameCreated = useRef(false); // to track if the game has been created
-  const timeoutRef = useRef(null); // to store the timeout ID
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categoriesCollection = collection(firestore, 'categories');
+      const categoriesSnapshot = await getDocs(categoriesCollection);
+      const categoriesList = categoriesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setCategories(categoriesList);
+    };
+
+    fetchCategories().catch(console.error);
+  }, []);
 
   useEffect(() => {
     const storedGameCode = localStorage.getItem('gameCode');
@@ -43,7 +58,6 @@ const Host = () => {
             status: 'waiting',
             words: [],
             usedWords: [], // Initialize used words array
-            createdAt: new Date().getTime(), // Timestamp for creation
           });
           console.log(`Game created with code: ${code}`);
 
@@ -56,25 +70,7 @@ const Host = () => {
           });
 
           gameCreated.current = true; // set the flag to true after game creation
-
-          // Set a timeout to delete the game if not started within 10 minutes
-          timeoutRef.current = setTimeout(async () => {
-            const gameSnapshot = await gameRef.get();
-            if (gameSnapshot.exists && gameSnapshot.data().status === 'waiting') {
-              console.log('Deleting inactive game...');
-              await deleteDoc(gameRef);
-              localStorage.removeItem('gameCode');
-              setMessage('Game expired due to inactivity');
-              setTimeout(() => {
-                navigate('/');
-              }, 3000);
-            }
-          }, 10 * 60 * 1000); // 10 minutes
-
-          return () => {
-            clearTimeout(timeoutRef.current); // Clear timeout on component unmount
-            unsubscribe();
-          };
+          return () => unsubscribe();
         } catch (error) {
           console.error('Error creating game:', error);
         }
@@ -87,8 +83,19 @@ const Host = () => {
   }, [userName]);
 
   const assignWords = async (players) => {
-    const category = categories[0]; // Assuming we're using the first category for simplicity
-    const wordsList = await fetchWords(category);
+    let wordsList;
+    if (selectedCategory === 'custom') {
+      wordsList = customWords.split(',').map(word => word.trim());
+    } else {
+      let selectedCat;
+      if (selectedCategory === 'random') {
+        selectedCat = categories[Math.floor(Math.random() * categories.length)];
+      } else {
+        selectedCat = categories.find(cat => cat.id === selectedCategory);
+      }
+      wordsList = selectedCat.words;
+    }
+
     const playerWords = players.map((player, index) => {
       if (index === Math.floor(Math.random() * players.length)) {
         return { uid: player, word: wordsList[1] }; // Different word
@@ -113,7 +120,6 @@ const Host = () => {
       status: 'started',
       words: playerWords,
     });
-    clearTimeout(timeoutRef.current); // Clear the timeout if the game starts
     navigate(`/game/${gameCode}`);
     audioManager.playGameStart();
   };
@@ -123,8 +129,7 @@ const Host = () => {
     const gameRef = doc(firestore, 'games', gameCode);
     await deleteDoc(gameRef);
     localStorage.removeItem('gameCode');
-    clearTimeout(timeoutRef.current); // Clear the timeout if the host exits the game
-    navigate('/');
+    navigate('/choose');
   };
 
   const handleReturn = () => {
@@ -142,6 +147,25 @@ const Host = () => {
           <li key={index}>{player}</li>
         ))}
       </ul>
+      <label>
+        Select Category:
+        <select className="comic-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+          <option value="random">Random</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>{category.category}</option>
+          ))}
+          <option value="custom">Custom</option>
+        </select>
+      </label>
+      {selectedCategory === 'custom' && (
+        <input
+          type="text"
+          className="comic-input"
+          placeholder="Enter custom words separated by commas"
+          value={customWords}
+          onChange={(e) => setCustomWords(e.target.value)}
+        />
+      )}
       {message && <p className="message">{message}</p>}
       <div className="button-container">
         <button className="comic-button" onClick={startGame}>Start Game</button>

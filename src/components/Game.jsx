@@ -1,8 +1,7 @@
-// src/components/Game.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase';
-import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove, deleteDoc } from 'firebase/firestore';
 
 const Game = ({ userName }) => {
   const { gameCode } = useParams();
@@ -11,6 +10,7 @@ const Game = ({ userName }) => {
   const [host, setHost] = useState('');
   const [words, setWords] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [assignedWords, setAssignedWords] = useState([]);
   const [myWord, setMyWord] = useState('');
   const [message, setMessage] = useState('');
@@ -19,7 +19,10 @@ const Game = ({ userName }) => {
     const fetchCategories = async () => {
       const categoriesCollection = collection(firestore, 'categories');
       const categoriesSnapshot = await getDocs(categoriesCollection);
-      const categoriesList = categoriesSnapshot.docs.map(doc => doc.data());
+      const categoriesList = categoriesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       setCategories(categoriesList);
     };
 
@@ -41,7 +44,7 @@ const Game = ({ userName }) => {
         } else if (data.status === 'ended') {
           setMessage('Host ended the game');
           setTimeout(() => {
-            navigate('/');
+            navigate('/choose');
           }, 3000);
         }
         if (data.message) {
@@ -59,8 +62,13 @@ const Game = ({ userName }) => {
       throw new Error('No categories found');
     }
 
-    const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
-    const shuffledWords = selectedCategory.words.sort(() => 0.5 - Math.random());
+    let selectedCat;
+    if (selectedCategory === '') {
+      selectedCat = categories[Math.floor(Math.random() * categories.length)];
+    } else {
+      selectedCat = categories.find(cat => cat.id === selectedCategory);
+    }
+    const shuffledWords = selectedCat.words.sort(() => 0.5 - Math.random());
 
     if (players.length < 2) {
       throw new Error('Not enough players to assign words');
@@ -91,15 +99,15 @@ const Game = ({ userName }) => {
     }
   };
 
-  const restartGame = async () => {
+  const shuffleWords = async () => {
     try {
       await assignWords();
       await updateDoc(doc(firestore, 'games', gameCode), {
         status: 'started',
-        message: 'Game restarted by host'
+        message: 'Words shuffled by host'
       });
     } catch (error) {
-      console.error('Error restarting game:', error);
+      console.error('Error shuffling words:', error);
     }
   };
 
@@ -108,7 +116,7 @@ const Game = ({ userName }) => {
     if (players.length <= 3) {
       await updateDoc(gameRef, { status: 'ended', message: 'Not enough players. Game ended.' });
       setTimeout(() => {
-        navigate('/');
+        navigate('/choose');
       }, 3000);
     } else {
       if (host === userName) {
@@ -125,7 +133,7 @@ const Game = ({ userName }) => {
         });
       }
       setTimeout(() => {
-        navigate('/');
+        navigate('/choose');
       }, 3000);
     }
   };
@@ -136,8 +144,10 @@ const Game = ({ userName }) => {
         status: 'ended',
         message: 'Host ended the game'
       });
-      setTimeout(() => {
-        navigate('/');
+      setTimeout(async () => {
+        await deleteDoc(doc(firestore, 'games', gameCode));
+        localStorage.removeItem('gameCode');
+        navigate('/choose');
       }, 3000);
     } catch (error) {
       console.error('Error ending game:', error);
@@ -164,7 +174,16 @@ const Game = ({ userName }) => {
       </div>
       {host === userName && (
         <div className='host-buttons'>
-          <button onClick={restartGame} className="comic-button-restart">Restart Game</button>
+          <label>
+            Select Category:
+            <select className="comic-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+              <option value="" disabled>Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>{category.category}</option>
+              ))}
+            </select>
+          </label>
+          <button onClick={shuffleWords} className="comic-button-restart">Shuffle Words</button>
           <button onClick={endGame} className="comic-button-end">End Game</button>
         </div>
       )}
