@@ -1,14 +1,19 @@
-import React from 'react';
+// src/components/HowToPlay.jsx
+import React, { useContext } from 'react';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const HowToPlay = () => {
+  const { language } = useContext(LanguageContext);
+
   return (
     <div className="container">
-      <h2>How to Play</h2>
+      <h2>{translations[language].howToPlay}</h2>
       <ol>
-        <li>Enter your name and choose to host or join a game.</li>
-        <li>If you host, share the game code with your friends.</li>
-        <li>Each player will receive a word. One player will have a different word from same category.</li>
-        <li>take rounds and say one thing about your word, and after each round vote for the MisCarded!</li>
+        <li>{translations[language].step1}</li>
+        <li>{translations[language].step2}</li>
+        <li>{translations[language].step3}</li>
+        <li>{translations[language].step4}</li>
       </ol>
     </div>
   );

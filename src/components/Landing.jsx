@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+// src/components/Landing.jsx
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import audioManager from '../audioManager';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const Landing = ({ setUserName }) => {
   const location = useLocation();
-  const [name, setName] = useState('');
+  const [name, setName] = useState(localStorage.getItem('userName') || '');
+  const [message, setMessage] = useState('');
+  const { language } = useContext(LanguageContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +24,8 @@ const Landing = ({ setUserName }) => {
 
     if (!name) {
       audioManager.playFail();
-      alert('Please enter your name');
+      setMessage(translations[language].enterYourName);
+      setTimeout(() => setMessage(''), 3000); // Clear message after 3 seconds
       return;
     }
     setUserName(name);
@@ -35,18 +41,19 @@ const Landing = ({ setUserName }) => {
   };
 
   return (
-    <div className="landing container">
-      <h2>Welcome to MisCarded</h2>
+    <div className="landing container" dir={language === 'ar' || language === 'ku' ? 'rtl' : 'ltr'}>
+      <h2>{translations[language].welcome}</h2>
       <input
         type="text"
-        placeholder="Enter your name"
+        placeholder={translations[language].enterName}
         value={name}
         onChange={(e) => setName(e.target.value)}
         onKeyPress={handleKeyPress}
       />
       <button className="comic-button" onClick={handleStart}>
-        {name ? 'Update Name' : 'Start'}
+        {name ? translations[language].updateName : translations[language].start}
       </button>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };

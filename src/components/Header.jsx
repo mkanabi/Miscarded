@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import audioManager from '../audioManager';
 import { firestore } from '../firebase';
 import { deleteDoc, doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
+import { LanguageContext } from '../LanguageContext';
+import translations from '../translations';
 
 const Header = ({ userName, setUserName }) => {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ const Header = ({ userName, setUserName }) => {
   const joinedGameCode = localStorage.getItem('joinedGameCode');
   const storedUserName = localStorage.getItem('userName');
   const [soundEnabled, setSoundEnabled] = useState(audioManager.soundEnabled);
+  const { language, setLanguage } = useContext(LanguageContext);
 
   useEffect(() => {
     console.log("Stored user name from local storage:", storedUserName);
@@ -93,6 +96,10 @@ const Header = ({ userName, setUserName }) => {
     audioManager.playButtonClick();
   };
 
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
   return (
     <header>
       <div onClick={handleLogoClick} className="logo" style={{ cursor: 'pointer' }}>
@@ -100,11 +107,11 @@ const Header = ({ userName, setUserName }) => {
       </div>
       <nav>
         <div className="dropdown">
-          <button className="dropdown-button">Menu</button>
-     <div className="dropdown-content">
-            <button onClick={() => { handleLinkClick(); navigate('/about'); }}>About</button>
-            <button onClick={() => { handleLinkClick(); navigate('/how-to-play'); }}>How to Play</button>
-            <button onClick={() => { handleLinkClick(); navigate('/contacts'); }}>Contacts</button>
+          <button className="dropdown-button">☰</button>
+          <div className="dropdown-content">
+            <button onClick={() => { handleLinkClick(); navigate('/about'); }}>{translations[language].about}</button>
+            <button onClick={() => { handleLinkClick(); navigate('/how-to-play'); }}>{translations[language].howToPlay}</button>
+            <button onClick={() => { handleLinkClick(); navigate('/contacts'); }}>{translations[language].contacts}</button>
           </div>
         </div>
         {storedUserName && (
@@ -113,33 +120,40 @@ const Header = ({ userName, setUserName }) => {
               {storedUserName}
             </button>
             <div className="dropdown-content">
-              <button onClick={handleChangeUserName}>Change User Name</button>
+              <button onClick={handleChangeUserName}>{translations[language].updateUserName}</button>
             </div>
           </div>
         )}
         {storedGameCode && (
           <div className="dropdown">
             <button className="dropdown-button">
-              Hosted Game
+              {translations[language].hostedGame}
             </button>
             <div className="dropdown-content">
-              <button onClick={handleReturnToGame}>Return to Game</button>
-              <button onClick={handleEndGame}>End Game</button>
+              <button onClick={handleReturnToGame}>{translations[language].returnToGame}</button>
+              <button onClick={handleEndGame}>{translations[language].endGame}</button>
             </div>
           </div>
         )}
         {joinedGameCode && (
           <div className="dropdown">
             <button className="dropdown-button">
-              Joined Game
+              {translations[language].joinedGame}
             </button>
             <div className="dropdown-content">
-              <button onClick={handleReturnToGame}>Return to Game</button>
-              <button onClick={handleLeaveGame}>Leave Game</button>
+              <button onClick={handleReturnToGame}>{translations[language].returnToGame}</button>
+              <button onClick={handleLeaveGame}>{translations[language].leaveGame}</button>
             </div>
           </div>
         )}
       </nav>
+      <div className="language-selector">
+        <select value={language} onChange={handleLanguageChange} className="comic-select">
+          <option value="en" style={{ fontFamily: 'Bangers, sans-serif' }}>English</option>
+          <option value="ku" style={{ fontFamily: 'UniMahanGamayZhian, sans-serif', fontWeight: 800 }}>کوردی</option>
+          <option value="ar" style={{ fontFamily: 'Lalezar-Regular, sans-serif' }}>العربية</option>
+        </select>
+      </div>
       <div className="sound-toggle">
         <input
           type="checkbox"

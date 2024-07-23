@@ -1,10 +1,15 @@
-import React from 'react';
+// src/components/About.jsx
+import React, { useContext } from 'react';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const About = () => {
+  const { language } = useContext(LanguageContext);
+
   return (
     <div className="container">
-      <h2>About MisCarded</h2>
-      <p>MisCarded is a fun and engaging card game designed for players of all ages. Gather your friends, choose your categories, and see who can guess the odd card out!</p>
+      <h2>{translations[language].about}</h2>
+      <p>{translations[language].aboutDescription}</p>
     </div>
   );
 };

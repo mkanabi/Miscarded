@@ -1,10 +1,15 @@
-import React from 'react';
+// src/components/ContactUs.jsx
+import React, { useContext } from 'react';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const ContactUs = () => {
+  const { language } = useContext(LanguageContext);
+
   return (
     <div className="container">
-      <h2>Contact Us</h2>
-      <p>If you have any questions or feedback, feel free to reach out to us at:</p>
+      <h2>{translations[language].contacts}</h2>
+      <p>{translations[language].contactDescription}</p>
       <p>Email: mkanabi@protonmail.com</p>
     </div>
   );

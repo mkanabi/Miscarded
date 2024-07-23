@@ -1,27 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { firestore } from '../firebase';
 import { doc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
 import audioManager from '../audioManager';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const Join = () => {
   const { gameCode } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [playerName, setPlayerName] = useState(location.state?.userName || '');
+  const [playerName, setPlayerName] = useState(location.state?.userName || localStorage.getItem('userName') || '');
   const [inputGameCode, setInputGameCode] = useState(gameCode || '');
   const [message, setMessage] = useState('');
+  const { language } = useContext(LanguageContext);
 
   const handleJoinGame = async () => {
     if (!playerName) {
-      setMessage('Please enter your name');
+      setMessage(translations[language].enterYourName);
       setTimeout(() => setMessage(''), 3000);
       return;
     }
 
     const code = gameCode || inputGameCode;
     if (!code) {
-      setMessage('Please enter a game code');
+      setMessage(translations[language].enterGameCode);
       setTimeout(() => setMessage(''), 3000);
       return;
     }
@@ -41,7 +44,7 @@ const Join = () => {
       audioManager.playGameStart();
     } else {
       audioManager.playFail();
-      setMessage('Game not found');
+      setMessage(translations[language].gameNotFound);
       setTimeout(() => setMessage(''), 3000);
     }
   };
@@ -50,7 +53,7 @@ const Join = () => {
     audioManager.playButtonClick();
     if (!playerName || (!inputGameCode && !gameCode)) {
       audioManager.playFail();
-      setMessage('Please fill in all fields');
+      setMessage(translations[language].fillAllFields);
       setTimeout(() => setMessage(''), 3000);
       return;
     }
@@ -69,31 +72,33 @@ const Join = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Join Game</h2>
+    <div className="join">
       {message && <p className="message">{message}</p>}
-      {!gameCode && (
-        <input
-          type="text"
-          placeholder="Enter game code"
-          className="game-code-input"
-          value={inputGameCode}
-          onChange={(e) => setInputGameCode(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-      )}
-      {!location.state?.userName && (
-        <input
-          type="text"
-          placeholder="Enter your name"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-      )}
-      <div className="button-container">
-        <button className="comic-button" onClick={handleSubmit}>Join Game</button>
-        <button className="comic-button return-button" onClick={handleReturn}>Return</button>
+      <div className="container">
+        <h2>{translations[language].joinGame}</h2>
+        {!gameCode && (
+          <input
+            type="text"
+            placeholder={translations[language].enterGameCode}
+            className="game-code-input"
+            value={inputGameCode}
+            onChange={(e) => setInputGameCode(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+        )}
+        {!location.state?.userName && (
+          <input
+            type="text"
+            placeholder={translations[language].enterYourName}
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+        )}
+        <div className="button-container">
+          <button className="comic-button" onClick={handleSubmit}>{translations[language].joinGame}</button>
+          <button className="comic-button return-button" onClick={handleReturn}>{translations[language].return}</button>
+        </div>
       </div>
     </div>
   );
