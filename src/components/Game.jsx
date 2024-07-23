@@ -4,7 +4,7 @@ import { firestore } from '../firebase';
 import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove, deleteDoc } from 'firebase/firestore';
 
 const Game = ({ userName }) => {
-  const { gameCode } = useParams();
+  const { gameCode } = useParams() || localStorage.getItem('gameCode');
   const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [host, setHost] = useState('');
@@ -37,10 +37,18 @@ const Game = ({ userName }) => {
         const data = doc.data();
         setPlayers(data.players);
         setHost(data.host);
+
+        // Retrieve player's state
+        const playerState = data.playersState?.[userName];
+        if (playerState) {
+          setMyWord(playerState.word);
+          if (playerState.isHost) {
+            setHost(userName);
+          }
+        }
+
         if (data.status === 'started') {
           setWords(data.words);
-          const myWordObj = data.words.find((word) => word.uid === userName);
-          setMyWord(myWordObj ? myWordObj.word : '');
         } else if (data.status === 'ended') {
           setMessage('Host ended the game');
           setTimeout(() => {
@@ -56,6 +64,16 @@ const Game = ({ userName }) => {
 
     return () => unsubscribe();
   }, [gameCode, userName, navigate]);
+
+  const updatePlayerState = async (userName, word) => {
+    const gameRef = doc(firestore, 'games', gameCode);
+    await updateDoc(gameRef, {
+      [`playersState.${userName}`]: {
+        word: word,
+        isHost: userName === host
+      }
+    });
+  };
 
   const assignWords = async () => {
     if (categories.length === 0) {
@@ -85,6 +103,11 @@ const Game = ({ userName }) => {
     setAssignedWords(newAssignedWords);
     await updateDoc(doc(firestore, 'games', gameCode), {
       words: newAssignedWords,
+    });
+
+    // Update each player's state in Firestore
+    newAssignedWords.forEach(async (assignedWord) => {
+      await updatePlayerState(assignedWord.uid, assignedWord.word);
     });
   };
 
