@@ -98,7 +98,7 @@ const Host = () => {
     <div className="host">
       {message && <p className="message">{message}</p>}
       <div className="container">
-        <h2>{translations[language].gameCode}: {gameCode}</h2>
+        <h2>{translations[language].gameCode}: <gamecode>{gameCode}</gamecode></h2>
         <QRCode value={`${window.location.origin}/join/${gameCode}`} />
         <h3>{translations[language].players}:</h3>
         <ol className="players-list">
