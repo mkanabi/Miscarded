@@ -47,6 +47,7 @@ const translations = {
       enterCustomWords: "custom words seperated by comma",
       host: "Host",
       playersInGame: "Players in Game",
+      copyright:"2024 Mohammed Kanabi. All rights reserved."
     },
     ku: {
       welcome: "ناوت بنووسە تکایە",
@@ -95,6 +96,7 @@ const translations = {
     enterCustomWords: "وشەکان بنووسە بە فاریزە جیایان بکەوە",
     host: "میواندار",
     playersInGame: "یاریکەرەکانی بەشدار",
+    copyright:"2024 محمد کانەبی. هەموو مافەکان پارێزراوە"
     },
 
     ar: {
@@ -142,7 +144,9 @@ const translations = {
     shuffleWords: "خلط الكلمات",
     host: "المضيف",
     playersInGame: "اللاعبين في اللعبة",
-    },
+    enterCustomWords: "كلمات مخصصة مفصولة بفاصلة",
+    copyright:"2024 محمد كنبي. جميع الحقوق محفوظة"
+   },
 
     }
   

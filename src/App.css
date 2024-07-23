@@ -60,11 +60,20 @@ border-color: #000;
   justify-self: center;
   max-width:max-content;
   gap: 20px;
-  padding: 30px; 
+  margin-right: 10%;
+  margin-left: 10%;
 }
 footer{
+  padding: 30px 5px;
 z-index: 1;
 }
+.footercopy
+{
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .toggleSwitch {
   max-width: 50px;
   min-width: 50px;

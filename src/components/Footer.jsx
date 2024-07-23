@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import translations from '../translations';
+import { LanguageContext } from '../LanguageContext';
 
 const Footer = () => {
+  const { language } = useContext(LanguageContext);
+
   return (
     <footer>
-      <p>&copy; 2024 MisCarded. All rights reserved.</p>
+      <p className='footercopy'>&copy;{translations[language].copyright}</p>
     </footer>
   );
 };
