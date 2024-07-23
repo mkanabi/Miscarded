@@ -74,11 +74,11 @@ const Lobby = ({ userName }) => {
       <h2>Game Code: {gameCode}</h2>
       {message && <p>{message}</p>}
       <h3>Players:</h3>
-      <ul>
+      <ol>
         {players.map((player, index) => (
           <li key={index}>{player}{player === host && ' (Host)'}</li>
         ))}
-      </ul>
+      </ol>
       {host === userName && (
         <button onClick={startGame} className="comic-button">Start Game</button>
       )}

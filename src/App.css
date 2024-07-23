@@ -82,6 +82,8 @@ z-index: 1;
   transition-duration: .3s;
   box-shadow: #d95610 2px 2px 0px;
   overflow: hidden;
+  text-overflow: ellipsis;
+white-space: nowrap;
 }
 
 /* Hide default HTML checkbox */
@@ -235,6 +237,10 @@ footer p {
   font-size: 1rem;
   padding: 4px 4px;
   box-shadow: #d95610 2px 2px 0px;
+  text-overflow: ellipsis;
+white-space: nowrap;
+overflow: hidden;
+
 }
 
 .dropdown-content {
@@ -460,14 +466,50 @@ input:focus {
   }
 }
 
-.button-container,
-.players-list {
+.button-container{
   display: flex;
   gap: 20px;
   list-style: none;
   padding: 0;
+ 
 }
 
+.players-list {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  max-width: 100%;
+  max-height:100px;
+  scroll-behavior: auto;
+  border: #7e7e7e;
+  padding: 10px;
+  text-overflow: ellipsis;
+  box-shadow: #64646465 2px 2px 2px;
+  border-style:groove;
+  border-radius: 10px;
+  background-color: #cccccc4b;
+
+ 
+}
+.players-list li{
+  border:#000;
+  border-color: #131313;
+  border-style: groove;
+  min-width: 100%;
+  border-radius: 15px;
+  box-shadow: #d95610 2px 2px 0px;
+  text-overflow: ellipsis;
+  
+
+  
+
+
+
+
+}
 /* Specific style for the return button */
 .return-button {
   background-color: #7b7b7b;

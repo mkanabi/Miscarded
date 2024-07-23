@@ -101,11 +101,11 @@ const Host = () => {
         <h2>{translations[language].gameCode}: {gameCode}</h2>
         <QRCode value={`${window.location.origin}/join/${gameCode}`} />
         <h3>{translations[language].players}:</h3>
-        <ul className="players-list">
+        <ol className="players-list">
           {players.map((player, index) => (
             <li key={index}>{player}</li>
           ))}
-        </ul>
+        </ol>
         <div className="button-container">
           <button className="comic-button" onClick={startGame}>{translations[language].startGame}</button>
           <button className="comic-button" onClick={exitGame}>{translations[language].exitGame}</button>
