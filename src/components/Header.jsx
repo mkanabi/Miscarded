@@ -146,14 +146,15 @@ const Header = ({ userName, setUserName }) => {
             </div>
           </div>
         )}
-      </nav>
-      <div className="language-selector">
+        <div className="language-selector">
         <select value={language} onChange={handleLanguageChange} className="comic-select">
           <option value="en" style={{ fontFamily: 'Bangers, sans-serif' }}>English</option>
           <option value="ku" style={{ fontFamily: 'UniMahanGamayZhian, sans-serif', fontWeight: 800 }}>کوردی</option>
           <option value="ar" style={{ fontFamily: 'Lalezar-Regular, sans-serif' }}>العربية</option>
         </select>
       </div>
+      </nav>
+      
       <div className="sound-toggle">
         <input
           type="checkbox"
