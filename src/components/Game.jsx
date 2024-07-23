@@ -110,9 +110,11 @@ const Game = ({ userName: propUserName }) => {
     const sameWord = shuffledWords[0];
     const differentWord = shuffledWords[1];
 
+    const oddPlayerIndex = Math.floor(Math.random() * players.length);
+
     const newAssignedWords = players.map((player, index) => ({
       uid: player,
-      word: index === players.length - 1 ? differentWord : sameWord,
+      word: index === oddPlayerIndex ? differentWord : sameWord,
     }));
 
     setAssignedWords(newAssignedWords);
@@ -215,7 +217,7 @@ const Game = ({ userName: propUserName }) => {
           <div className='host-buttons'>
             <label>
               {translations[language].selectCategory}:
-              <select className="comic-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+              <select className="comic-select-cat" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                 <option value="random">{translations[language].random}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.category}</option>

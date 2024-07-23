@@ -74,7 +74,7 @@ const Lobby = ({ userName }) => {
       <h2>Game Code: {gameCode}</h2>
       {message && <p>{message}</p>}
       <h3>Players:</h3>
-      <ol>
+      <ol className='players-list'>
         {players.map((player, index) => (
           <li key={index}>{player}{player === host && ' (Host)'}</li>
         ))}

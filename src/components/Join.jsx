@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { firestore } from '../firebase';
 import { doc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
@@ -14,6 +14,12 @@ const Join = () => {
   const [inputGameCode, setInputGameCode] = useState(gameCode || '');
   const [message, setMessage] = useState('');
   const { language } = useContext(LanguageContext);
+
+  useEffect(() => {
+    if (gameCode && playerName) {
+      handleJoinGame();
+    }
+  }, [gameCode, playerName]);
 
   const handleJoinGame = async () => {
     if (!playerName) {
@@ -86,7 +92,7 @@ const Join = () => {
             onKeyPress={handleKeyPress}
           />
         )}
-        {!location.state?.userName && (
+        {!playerName && (
           <input
             type="text"
             placeholder={translations[language].enterYourName}

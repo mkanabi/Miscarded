@@ -27,6 +27,7 @@ const App = () => {
           <Route path="/host" element={<Host />} />
           <Route path="/join" element={<Join />} />
           <Route path="/game/:gameCode" element={<Game />} />
+          <Route path="/join/:gameCode" element={<Join />} />
           <Route path="/about" element={<About />} />
           <Route path="/contacts" element={<ContactUs />} />
           <Route path="/how-to-play" element={<HowToPlay />} />
