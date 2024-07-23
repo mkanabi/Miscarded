@@ -70,9 +70,11 @@ const Lobby = ({ userName }) => {
   };
 
   return (
+    <div className="lobby">
+            {message && <p className="message">{message}</p>}
+
     <div className="container">
       <h2>Game Code: {gameCode}</h2>
-      {message && <p>{message}</p>}
       <h3>Players:</h3>
       <ol className='players-list'>
         {players.map((player, index) => (
@@ -83,6 +85,7 @@ const Lobby = ({ userName }) => {
         <button onClick={startGame} className="comic-button">Start Game</button>
       )}
       <button onClick={exitGame} className="comic-button">Exit Game</button>
+    </div>
     </div>
   );
 };

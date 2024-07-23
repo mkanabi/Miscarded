@@ -41,7 +41,9 @@ const Landing = ({ setUserName }) => {
   };
 
   return (
-    <div className="landing container" dir={language === 'ar' || language === 'ku' ? 'rtl' : 'ltr'}>
+    <div className='landing'>
+            {message && <p className="message">{message}</p>}
+    <div className="container" dir={language === 'ar' || language === 'ku' ? 'rtl' : 'ltr'}>
       <h2>{translations[language].welcome}</h2>
       <input
         type="text"
@@ -53,8 +55,7 @@ const Landing = ({ setUserName }) => {
       <button className="comic-button" onClick={handleStart}>
         {name ? translations[language].updateName : translations[language].start}
       </button>
-      {message && <p className="message">{message}</p>}
-    </div>
+    </div></div>
   );
 };
 
