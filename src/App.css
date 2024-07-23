@@ -68,17 +68,19 @@ footer{
 z-index: 1;
 }
 .toggleSwitch {
-  width: 50px;
-  height: 50px;
+  max-width: 50px;
+  min-width: 50px;
+  max-height: 30px;
+  min-height: 30px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgb(255, 189, 8);
-  border-radius: 50%;
+  border-radius: 10px;
   cursor: pointer;
   transition-duration: .3s;
-  box-shadow: 2px 2px 1px rgba(255, 118, 13, 0.652);
+  box-shadow: #d95610 2px 2px 0px;
   overflow: hidden;
 }
 
@@ -96,6 +98,7 @@ z-index: 1;
 }
 
 .speaker {
+  
   width: 100%;
   height: 100%;
   display: flex;
@@ -103,6 +106,8 @@ z-index: 1;
   justify-content: center;
   z-index: 2;
   transition-duration: .3s;
+  max-width: 50px;
+  min-width: 50px;
 }
 
 .speaker svg {
@@ -119,6 +124,7 @@ z-index: 1;
   opacity: 0;
   z-index: 2;
   transition-duration: .3s;
+  
 }
 
 .mute-speaker svg {
@@ -145,7 +151,6 @@ z-index: 1;
 .sound-toggle {
   display: flex;
   align-items: center;
-  margin-left: 20px;
 }
 
 header{
@@ -163,16 +168,17 @@ footer{
 
 header nav {
   display: flex;
-  gap: 20px;
-  margin-right: 20px;
+  gap: 30px;
   justify-content: center;
   align-items: center;
+
 }
 
 header nav a {
   color: #000;
   text-decoration: none;
   font-size: 1.2rem;
+
 }
 
 header nav a:hover {
@@ -214,9 +220,14 @@ footer p {
 .dropdown {
   position: relative;
   display: inline-block;
+
 }
 
 .dropdown-button {
+  max-width: 50px;
+  min-width: 50px;
+  max-height: 30px;
+  min-height: 30px;
   background-color: #ffc510;
   color: #d95610;
   border: none;
@@ -440,13 +451,11 @@ input:focus {
  .toggleSwitch{
   width: 30px;
   height: 30px;
-  margin-right: 20px;
   }
  
   header nav {
     flex-direction: column;
     gap: 10px;
-    margin-right: 5px;
 
   }
 }
@@ -549,28 +558,31 @@ input:focus {
 
 .comic-select {
   padding: 10px;
-  margin: 10px 0;
   border: 2px solid #000;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.5rem;
   width: 100%;
   background-color: #e4e4e4;
   color: #131313;
   box-shadow: 5px 5px 0px #000;
+  max-width: 50px;
+  min-width: 50px;
+  min-height: 30px;
+  max-height: 30px;
 }
 .language-selector {
-  margin-left: 20px;
+  font-size: 0.5rem;
   
 }
 
 .language-selector select {
-  font-size: 1rem;
+  font-size: 0.7rem;
   color: #d95610;
   background-color: #ffc510;
   border: none;
   border-radius: 10px;
   padding: 5px;
-  box-shadow: 3px 3px 0px #de570a;
+  box-shadow: #d95610 2px 2px 0px;
   cursor: pointer;
   appearance: none;
   outline: none;
