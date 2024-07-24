@@ -60,8 +60,8 @@ const Game = ({ userName }) => {
       throw new Error('No categories found');
     }
 
-    const category = selectedCategory || categories[Math.floor(Math.random() * categories.length)];
-    const shuffledWords = category.words.sort(() => 0.5 - Math.random());
+    const selectedCategoryData = categories.find(category => category.category === selectedCategory) || categories[Math.floor(Math.random() * categories.length)];
+    const shuffledWords = selectedCategoryData.words.sort(() => 0.5 - Math.random());
 
     if (players.length < 2) {
       throw new Error('Not enough players to assign words');
@@ -155,9 +155,10 @@ const Game = ({ userName }) => {
   }, [players]);
 
   return (
-    <div className="container">
-      <h1 className="word">{myWord}</h1>
+    <div className="game">
       {message && <p className='message'>{message}</p>}
+    <div className="container">
+      <h1 className="word">{myWord}</h1>    
       <div>
         <h3>Players in the game:</h3>
         <ul>
@@ -186,6 +187,8 @@ const Game = ({ userName }) => {
       )}
       <button onClick={exitGame} className="comic-button-exit">Exit Game</button>
     </div>
+         </div>
+ 
   );
 };
 
