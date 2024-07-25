@@ -91,9 +91,7 @@ const Game = ({ userName: propUserName }) => {
     if (selectedCategory === 'custom') {
       wordsList = customWords.split(' ').map(word => word.trim());
       if (wordsList.length < 5) {
-        setMessage(translations[language].minFiveWords);
-        setTimeout(() => setMessage(''), 3000);
-        return;
+        throw new Error(translations[language].minFiveWords);
       }
     } else {
       let selectedCat;
@@ -137,7 +135,7 @@ const Game = ({ userName: propUserName }) => {
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       console.error('Error shuffling words:', error);
-      setMessage(translations[language].shuffleError);
+      setMessage(error.message || translations[language].shuffleError);
       setTimeout(() => setMessage(''), 3000);
     }
   };
