@@ -1,7 +1,6 @@
-// src/components/Host.jsx
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { firestore } from '../firebase';
-import { doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import QRCode from 'qrcode.react';
 import audioManager from '../audioManager';
@@ -74,8 +73,18 @@ const Host = () => {
       return;
     }
 
-    navigate(`/game/${gameCode}`);
-    audioManager.playGameStart();
+    try {
+      await updateDoc(doc(firestore, 'games', gameCode), {
+        status: 'started',
+        message: translations[language].gameStartedByHost || '',
+      });
+      navigate(`/game/${gameCode}`);
+      audioManager.playGameStart();
+    } catch (error) {
+      console.error('Error starting game:', error);
+      setMessage(translations[language].startGameError);
+      setTimeout(() => setMessage(''), 3000);
+    }
   };
 
   const exitGame = async () => {

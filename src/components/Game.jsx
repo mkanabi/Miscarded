@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase';
-import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot, collection, getDocs, arrayRemove, deleteDoc, getDoc } from 'firebase/firestore';
 import { LanguageContext } from '../LanguageContext';
 import translations from '../translations';
 
@@ -50,24 +50,22 @@ const Game = ({ userName: propUserName }) => {
         const data = doc.data();
         setPlayers(data.players);
         setHost(data.host);
-
-        // Retrieve player's state
+        setWords(data.words);
+        console.log(data.status);
         const playerState = data.playersState?.[userName];
         if (playerState) {
           setMyWord(playerState.word);
-          if (playerState.isHost) {
-            setHost(userName);
-          }
         }
 
         if (data.status === 'started') {
-          setWords(data.words);
+          navigate(`/game/${gameCode}`, { state: { userName } });
         } else if (data.status === 'ended') {
           setMessage(translations[language].hostEndedGame);
           setTimeout(() => {
             navigate('/choose');
           }, 3000);
         }
+
         if (data.message) {
           setMessage(data.message);
           setTimeout(() => setMessage(''), 3000);
@@ -78,12 +76,12 @@ const Game = ({ userName: propUserName }) => {
     return () => unsubscribe();
   }, [gameCode, userName, navigate, language]);
 
-  const updatePlayerState = async (userName, word, isHost) => {
+  const updatePlayerState = async (userName, word) => {
     const gameRef = doc(firestore, 'games', gameCode);
     await updateDoc(gameRef, {
       [`playersState.${userName}`]: {
         word: word,
-        isHost: isHost,
+        isHost: userName === host,
       }
     });
   };
@@ -122,9 +120,8 @@ const Game = ({ userName: propUserName }) => {
       words: newAssignedWords,
     });
 
-    // Update each player's state in Firestore
     newAssignedWords.forEach(async (assignedWord) => {
-      await updatePlayerState(assignedWord.uid, assignedWord.word, assignedWord.uid === host);
+      await updatePlayerState(assignedWord.uid, assignedWord.word);
     });
   };
 
@@ -159,10 +156,22 @@ const Game = ({ userName: propUserName }) => {
   const exitGame = async () => {
     const gameRef = doc(firestore, 'games', gameCode);
     if (players.length <= 3) {
-      await updateDoc(gameRef, { status: 'ended', message: translations[language].notEnoughPlayersToEnd });
-      setTimeout(() => {
-        navigate('/choose');
-      }, 3000);
+
+      try {
+        await updateDoc(doc(firestore, 'games', gameCode), {
+          status: 'ended',
+          message: translations[language].notEnoughPlayersToEnd
+        });
+        setTimeout(async () => {
+          await deleteDoc(doc(firestore, 'games', gameCode));
+          localStorage.removeItem('gameCode');
+          navigate('/choose');
+        }, 3000);
+      } catch (error) {
+        console.error('Error ending game:', error);
+      }
+
+
     } else {
       if (host === userName) {
         const remainingPlayers = players.filter(player => player !== userName);
@@ -220,7 +229,7 @@ const Game = ({ userName: propUserName }) => {
         <h1 className="word">{myWord}</h1>
         <div>
           <h3>{translations[language].playersInGame}</h3>
-          <ul>
+          <ul className='players-list'>
             {players.map((player, index) => (
               <li key={index}>{player}{player === host && ` (${translations[language].host})`}</li>
             ))}
