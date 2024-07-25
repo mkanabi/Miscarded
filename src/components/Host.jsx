@@ -31,7 +31,6 @@ const Host = () => {
       gameCreated.current = true;
       return () => unsubscribe();
     } else if (!gameCreated.current) {
-      console.log('Creating game for the first time...');
       const code = Math.random().toString(36).substring(2, 8);
       setGameCode(code);
       localStorage.setItem('gameCode', code);
@@ -45,12 +44,10 @@ const Host = () => {
             words: [],
             usedWords: [], // Initialize used words array
           });
-          console.log(`Game created with code: ${code}`);
 
           const gameRef = doc(firestore, 'games', code);
           const unsubscribe = onSnapshot(gameRef, (doc) => {
             if (doc.exists()) {
-              console.log(`Snapshot data: ${JSON.stringify(doc.data())}`);
               setPlayers(doc.data().players);
             }
           });

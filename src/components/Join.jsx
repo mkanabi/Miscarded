@@ -11,6 +11,7 @@ const Join = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [playerName, setPlayerName] = useState(location.state?.userName || localStorage.getItem('userName') || '');
+  const [inputPlayerName, setInputPlayerName] = useState(playerName);
   const [inputGameCode, setInputGameCode] = useState(gameCode || '');
   const [message, setMessage] = useState('');
   const { language } = useContext(LanguageContext);
@@ -22,7 +23,7 @@ const Join = () => {
   }, [gameCode, playerName]);
 
   const handleJoinGame = async () => {
-    if (!playerName) {
+    if (!inputPlayerName) {
       setMessage(translations[language].enterYourName);
       setTimeout(() => setMessage(''), 3000);
       return;
@@ -40,13 +41,13 @@ const Join = () => {
 
     if (gameDoc.exists()) {
       await updateDoc(gameRef, {
-        players: arrayUnion(playerName),
+        players: arrayUnion(inputPlayerName),
       });
 
       localStorage.setItem('joinedGameCode', code);
-      localStorage.setItem('userName', playerName);
+      localStorage.setItem('userName', inputPlayerName);
 
-      navigate(`/lobby/${code}`, { state: { userName: playerName } });
+      navigate(`/lobby/${code}`, { state: { userName: inputPlayerName } });
       audioManager.playGameStart();
     } else {
       audioManager.playFail();
@@ -57,12 +58,13 @@ const Join = () => {
 
   const handleSubmit = () => {
     audioManager.playButtonClick();
-    if (!playerName || (!inputGameCode && !gameCode)) {
+    if (!inputPlayerName || (!inputGameCode && !gameCode)) {
       audioManager.playFail();
       setMessage(translations[language].fillAllFields);
       setTimeout(() => setMessage(''), 3000);
       return;
     }
+    setPlayerName(inputPlayerName); // Update playerName only on submit
     handleJoinGame();
   };
 
@@ -74,7 +76,7 @@ const Join = () => {
 
   const handleReturn = () => {
     audioManager.playButtonClick();
-    navigate('/choose', { state: { userName: playerName } });
+    navigate('/choose', { state: { userName: inputPlayerName } });
   };
 
   return (
@@ -92,15 +94,13 @@ const Join = () => {
             onKeyPress={handleKeyPress}
           />
         )}
-        {!playerName && (
-          <input
-            type="text"
-            placeholder={translations[language].enterYourName}
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-        )}
+        <input
+          type="text"
+          placeholder={translations[language].enterYourName}
+          value={inputPlayerName}
+          onChange={(e) => setInputPlayerName(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
         <div className="button-container">
           <button className="comic-button" onClick={handleSubmit}>{translations[language].joinGame}</button>
           <button className="comic-button return-button" onClick={handleReturn}>{translations[language].return}</button>
