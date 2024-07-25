@@ -89,7 +89,12 @@ const Game = ({ userName: propUserName }) => {
   const assignWords = async () => {
     let wordsList;
     if (selectedCategory === 'custom') {
-      wordsList = customWords.split(',').map(word => word.trim());
+      wordsList = customWords.split(' ').map(word => word.trim());
+      if (wordsList.length < 5) {
+        setMessage(translations[language].minFiveWords);
+        setTimeout(() => setMessage(''), 3000);
+        return;
+      }
     } else {
       let selectedCat;
       if (selectedCategory === 'random') {
@@ -156,7 +161,6 @@ const Game = ({ userName: propUserName }) => {
   const exitGame = async () => {
     const gameRef = doc(firestore, 'games', gameCode);
     if (players.length <= 3) {
-
       try {
         await updateDoc(doc(firestore, 'games', gameCode), {
           status: 'ended',
@@ -170,8 +174,6 @@ const Game = ({ userName: propUserName }) => {
       } catch (error) {
         console.error('Error ending game:', error);
       }
-
-
     } else {
       if (host === userName) {
         const remainingPlayers = players.filter(player => player !== userName);

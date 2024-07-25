@@ -44,10 +44,11 @@ const translations = {
       hostEndedGame: "Host ended the game",
       selectCategory: "Select Category",
       shuffleWords: "Shuffle Words",
-      enterCustomWords: "custom words seperated by comma",
+      enterCustomWords: "custom words seperated by single space",
       host: "Host",
       playersInGame: "Players in Game",
-      copyright:"2024 Mohammed Kanabi. All rights reserved."
+      copyright:"2024 Mohammed Kanabi. All rights reserved.",
+      minFiveWords: "Please enter at least 5 words",
     },
     ku: {
       welcome: "ناوت بنووسە تکایە",
@@ -93,10 +94,11 @@ const translations = {
     hostEndedGame: "میواندار  کۆتایی بە یاری هێنا",
     selectCategory: "هەڵبژاردنی چەشن",
     shuffleWords: "وشەکان تێکەڵ بکە",
-    enterCustomWords: "وشەکان بنووسە بە فاریزە جیایان بکەوە",
+    enterCustomWords: "وشەکان بنووسە بە یەک بۆشایی جیایان بکەوە",
     host: "میواندار",
     playersInGame: "یاریکەرەکانی بەشدار",
-    copyright:"2024 محمد کانەبی. هەموو مافەکان پارێزراوە"
+    copyright:"2024 محمد کانەبی. هەموو مافەکان پارێزراوە",
+    minFiveWords: "تکایە لانی کەم 5 وشە بنووسە"
     },
 
     ar: {
@@ -144,8 +146,9 @@ const translations = {
     shuffleWords: "خلط الكلمات",
     host: "المضيف",
     playersInGame: "اللاعبين في اللعبة",
-    enterCustomWords: "كلمات مخصصة مفصولة بفاصلة",
-    copyright:"2024 محمد كنبي. جميع الحقوق محفوظة"
+    enterCustomWords: "كلمات مخصصة مفصولة بمسافة واحدة",
+    copyright:"2024 محمد كنبي. جميع الحقوق محفوظة",
+        minFiveWords: "الرجاء إدخال 5 كلمات على الأقل"
    },
 
     }
